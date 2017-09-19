@@ -1,3 +1,4 @@
+Pkg.checkout("DataStructures")
 using mPulseAPI
 using Base.Test
 
