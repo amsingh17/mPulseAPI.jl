@@ -1,8 +1,6 @@
-julia 0.4
-Requests 0.3.9
+julia 0.7-
 LightXML
-HttpCommon
-HttpParser 0.2.0
+HTTP
 JSON
 DataFrames 0.7.3 0.11-
 Formatting
