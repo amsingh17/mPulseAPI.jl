@@ -5,7 +5,7 @@ export
     mPulseAPIResultFormatException,
     mPulseAPIBugException
 
-import HttpCommon.Response
+import HTTP.Response
 
 """
 Thrown when the REST API has a problem and returns something other than a 2xx response.

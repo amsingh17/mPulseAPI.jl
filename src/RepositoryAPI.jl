@@ -78,16 +78,16 @@ function getRepositoryToken(tenant::AbstractString, apiToken::AbstractString)
         println(Dict("tenant" => tenant, "apiToken" => apiToken))
     end
 
-    resp = Requests.put(TokenEndpoint,
-        json = Dict("tenant" => tenant, "apiToken" => apiToken),
+    resp = HTTP.put(TokenEndpoint,
+        body = JSON.json(Dict("tenant" => tenant, "apiToken" => apiToken)),
         headers = Dict("Content-type" => "application/json")
     )
 
-    if statuscode(resp) != 200
+    if resp.status != 200
         throw(mPulseAPIAuthException(resp))
     end
 
-    resp = Requests.json(resp)
+    resp = JSON.eval(String(resp))
 
     object = Dict(
         "apiToken" => apiToken,
@@ -390,18 +390,18 @@ function getRepositoryObject(token::AbstractString, objectType::AbstractString, 
     end
 
     # Attempt to fetch object from repository using auth token
-    resp = Requests.get(url, headers=Dict("X-Auth-Token" => token), query=query)
+    resp = HTTP.get(url, headers=Dict("X-Auth-Token" => token), query=query)
 
-    if statuscode(resp) == 401
+    if resp.status == 401
         throw(mPulseAPIAuthException(resp))
-    elseif statuscode(resp) == 500
+    elseif resp.status == 500
         throw(mPulseAPIBugException(resp))
-    elseif statuscode(resp) != 200
+    elseif resp.status != 200
         throw(mPulseAPIException("Error fetching $(objectType) $(debugID)", resp))
     end
 
-    # Do not use Requests.json as that expects UTF-8 data, and mPulse API's response is ISO-8859-1
-    json = join(map(Char, resp.data))
+    # Do not use String(resp) as that expects UTF-8 data, and mPulse API's response is ISO-8859-1
+    json = join(map(Char, take!(resp)))
     object = JSON.parse(json)
 
     # If calling by a searchKey other than ID, the return value will be a Dict with a single key="objects"

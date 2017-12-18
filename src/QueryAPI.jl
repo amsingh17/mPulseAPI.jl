@@ -94,15 +94,15 @@ function getAPIResults(token::AbstractString, appKey::AbstractString, query_type
         println(query)
     end
 
-    resp = Requests.get(url, headers = headers, query = query)
+    resp = HTTP.get(url, headers = headers, query = query)
 
     local object = Dict()
 
-    if statuscode(resp) == 401
+    if resp.status == 401
         throw(mPulseAPIAuthException(resp))
-    elseif statuscode(resp) != 200
+    elseif resp.status != 200
         try
-            object = Requests.json(resp)
+            object = JSON.eval(String(resp))
         end
 
         if haskey(object, "rs_fault")
@@ -123,15 +123,15 @@ function getAPIResults(token::AbstractString, appKey::AbstractString, query_type
             end
         end
 
-        if statuscode(resp) == 500
+        if resp.status == 500
             throw(mPulseAPIBugException(resp))
         else
             throw(mPulseAPIException("Error fetching $(query_type)", resp))
         end
     end
 
-    # Do not use Requests.json as that expects UTF-8 data, and mPulse API's response is ISO-8859-1
-    json = join(map(Char, resp.data))
+    # Do not use String(resp) as that expects UTF-8 data, and mPulse API's response is ISO-8859-1
+    json = join(map(Char, take!(resp)))
 
     # Remove double quotes around negative numbers (Bug 110740)
     json = replace(json, r"\"(-\d+)\"", s"\1")

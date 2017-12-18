@@ -28,7 +28,7 @@ mPulseAPI
 using Dates
 import Base: @__doc__
 
-using Requests, LightXML, HttpCommon, Formatting
+using HTTP, LightXML, Formatting
 
 # Tells docgen.jl to document internal methods as well
 const __document_internal = true
