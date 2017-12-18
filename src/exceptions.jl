@@ -21,7 +21,7 @@ Thrown when the REST API has a problem and returns something other than a 2xx re
 :    The body of the HTTP response from the server
 
 """
-immutable mPulseAPIException <: Exception
+struct mPulseAPIException <: Exception
     msg::AbstractString
     response::Response
     responseBody::AbstractString
@@ -43,7 +43,7 @@ Thrown when the token used to authenticate with the REST API is invalid or has e
 :    The body of the HTTP response from the server
 
 """
-immutable mPulseAPIAuthException <: Exception
+struct mPulseAPIAuthException <: Exception
     msg::AbstractString
     response::Response
     responseBody::AbstractString
@@ -71,7 +71,7 @@ Thrown when a request parameter is invalid
 :    The response object from the REST API call.  You can inspect headers, data, cookies, redirects, and the initiating request.
 
 """
-immutable mPulseAPIRequestException <: Exception
+struct mPulseAPIRequestException <: Exception
     msg::AbstractString
     code::AbstractString
     parameter::AbstractString
@@ -90,7 +90,7 @@ Thrown when the result returned by an API call was not in the expected format
 :    The actual data returned
 
 """
-immutable mPulseAPIResultFormatException <: Exception
+struct mPulseAPIResultFormatException <: Exception
     msg::AbstractString
     data::Any
 end
@@ -109,7 +109,7 @@ Thrown when the REST API has an internal server error and returns a `500 Interna
 :    The body of the HTTP response from the server
 
 """
-immutable mPulseAPIBugException <: Exception
+struct mPulseAPIBugException <: Exception
     msg::AbstractString
     response::Response
     responseBody::Response
