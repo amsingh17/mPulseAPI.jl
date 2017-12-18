@@ -25,7 +25,7 @@ $(replace(mPulseAPI.readdoc("README.md"), r"\n.*travis-ci\.org.*\n", ""))
 """
 mPulseAPI
 
-using Base.Dates
+using Dates
 import Base: @__doc__
 
 using Requests, LightXML, HttpCommon, Formatting
