@@ -2,5 +2,6 @@ julia 0.7-
 LightXML
 HTTP
 JSON
-DataFrames 0.7.3 0.11-
+DataFrames 0.7.3
+DataArrays
 Formatting
