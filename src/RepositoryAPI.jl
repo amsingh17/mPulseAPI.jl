@@ -142,6 +142,7 @@ function postRepositoryObject(token::AbstractString,
                               searchKey::Dict{Symbol, Any};
                               attributes::Dict=Dict(),
                               objectFields::Dict=Dict(),
+                              body::Union{AbstractString, LightXML.XMLElement}="",
                               filterRequired::Bool=true
 )
 
@@ -173,10 +174,10 @@ function postRepositoryObject(token::AbstractString,
         println(attributes)
     end
 
-
     json = Dict{AbstractString, Any}()
     json["type"] = objectType
 
+    # If attributes is supplied, update the object’s attributes field
     if !isempty(attributes)
         attributesDict = []
 
@@ -187,10 +188,26 @@ function postRepositoryObject(token::AbstractString,
         json["attributes"] = attributesDict
     end
 
+    # If any objectFields are supplied by the user, update these in the object (if it exists)
     if !isempty(objectFields)
         for (key, val) in objectFields
             json[key] = val
         end
+    end
+
+    # If the body argument is supplied, update this in the object 
+    if body != ""
+        if isa(body, AbstractString)
+            try
+                xdoc = parse_string(body)
+                xroot = root(xdoc)
+            catch
+                error("body string is not formatted correctly")
+            end
+        else
+            body = string(body)
+        end
+        json["body"] = body
     end
 
     resp = Requests.post(url,
@@ -199,7 +216,7 @@ function postRepositoryObject(token::AbstractString,
     )
 
     if statuscode(resp) != 204
-        error("Error fetching $(objectType), id = $(objectID).")
+        throw(mPulseAPIException("Error updating $(objectType), id = $(objectID).", resp))
     end
 
     return resp

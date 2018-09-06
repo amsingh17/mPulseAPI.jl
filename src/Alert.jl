@@ -200,7 +200,8 @@ You can clear the cache for this tenant using [`mPulseAPI.clearAlertCache`](@ref
 function postRepositoryAlert(token::AbstractString;
                             alertID::Int64=0,
                             attributes::Dict=Dict(),
-                            objectFields::Dict=Dict()
+                            objectFields::Dict=Dict(),
+                            body::Union{AbstractString, LightXML.XMLElement}=""
 )
 
     postRepositoryObject(
@@ -208,9 +209,11 @@ function postRepositoryAlert(token::AbstractString;
         "alert",
         Dict{Symbol, Any}(:id => alertID),
         attributes = attributes,
-        objectFields = objectFields
+        objectFields = objectFields,
+        body = body
     )
 
+    clearAlertCache(alertID = alertID)
     alert = getRepositoryAlert(token, alertID=alertID)
 
     return alert
